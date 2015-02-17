@@ -52,7 +52,7 @@ function transform3dTest() {
 	var mqProp = "transform-3d",
 		// Because the `translate3d` test below throws false positives in Android:
 		ret = $.mobile.media( "(-" + vendors.join( "-" + mqProp + "),(-" ) + "-" + mqProp + "),(" + mqProp + ")" ),
-		el, transforms, t;
+		el, transforms, t, style;
 
 	if ( ret ) {
 		return !!ret;
@@ -70,7 +70,10 @@ function transform3dTest() {
 	for ( t in transforms ) {
 		if ( el.style[ t ] !== undefined ) {
 			el.style[ t ] = "translate3d( 100px, 1px, 1px )";
-			ret = window.getComputedStyle( el ).getPropertyValue( transforms[ t ] );
+			// Firefox returns null from getComputedStyle in a hidden
+			// iframe
+			style = window.getComputedStyle( el );
+			ret = style && style.getPropertyValue( transforms[ t ] );
 		}
 	}
 	return ( !!ret && ret !== "none" );
